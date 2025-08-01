@@ -28,16 +28,18 @@ class FileManager():
             if grade[id] not in (1, 2) and point_wednesday[id] == 0 and point_weekend[id] == 0:
                 print(names[id])
 
-    def add_name(self, name: str) -> None:
+    def add_player(self, name: str) -> None:
         global total_id_cnt
         if name not in unique_name_list:
             total_id_cnt += 1
             unique_name_list[name] = total_id_cnt
             names[total_id_cnt] = name
+            player = Player(name, 0, 0)
+            player_list.append(player)
 
     def check_point(self, name: str, dayofweek: str) -> None:
 
-        self.add_name(name)
+        self.add_player(name)
         name_index = unique_name_list[name]
 
         add_point = 0
