@@ -1,54 +1,94 @@
-id1 = {}
-id_cnt = 0
+#constants
+GOLD = 1
+SILVER = 2
+NORMAL = 0
 
-# dat[사용자ID][요일]
-dat = [[0] * 100 for _ in range(100)]
+unique_name_list = {}
+total_id_cnt = 0
+
+# attendants_point_data[사용자ID][요일]
+attendants_point_data = [[0] * 100 for _ in range(100)]
 points = [0] * 100
 grade = [0] * 100
 names = [''] * 100
-wed = [0] * 100
-weeken = [0] * 100
+point_wednesday = [0] * 100
+point_weekend = [0] * 100
 
-def input2(w, wk):
-    global id_cnt
 
-    if w not in id1:
-        id_cnt += 1
-        id1[w] = id_cnt
-        names[id_cnt] = w
+def print_removed_player() -> None:
+    print("\nRemoved player")
+    print("==============")
+    for id in range(1, total_id_cnt + 1):
+        if grade[id] not in (1, 2) and point_wednesday[id] == 0 and point_weekend[id] == 0:
+            print(names[id])
 
-    id2 = id1[w]
+
+def print_point(id: int) -> None:
+    print(f"NAME : {names[id]}, POINT : {points[id]}, GRADE : ", end="")
+    if grade[id] == GOLD:
+        print("GOLD")
+    elif grade[id] == SILVER:
+        print("SILVER")
+    else:
+        print("NORMAL")
+
+
+def calculate_point(id: int):
+    if attendants_point_data[id][2] > 9:
+        points[id] += 10
+    if attendants_point_data[id][5] + attendants_point_data[id][6] > 9:
+        points[id] += 10
+    if points[id] >= 50:
+        grade[id] = GOLD
+    elif points[id] >= 30:
+        grade[id] = SILVER
+    else:
+        grade[id] = NORMAL
+
+
+def check_point(name: str, dayofweek: str) -> None:
+    add_name(name)
+    name_index = unique_name_list[name]
 
     add_point = 0
-    index = 0
+    week_index = 0
 
-    if wk == "monday":
-        index = 0
+    if dayofweek == "monday":
+        week_index = 0
         add_point += 1
-    elif wk == "tuesday":
-        index = 1
+    elif dayofweek == "tuesday":
+        week_index = 1
         add_point += 1
-    elif wk == "wednesday":
-        index = 2
+    elif dayofweek == "wednesday":
+        week_index = 2
         add_point += 3
-        wed[id2] += 1
-    elif wk == "thursday":
-        index = 3
+        point_wednesday[name_index] += 1
+    elif dayofweek == "thursday":
+        week_index = 3
         add_point += 1
-    elif wk == "friday":
-        index = 4
+    elif dayofweek == "friday":
+        week_index = 4
         add_point += 1
-    elif wk == "saturday":
-        index = 5
+    elif dayofweek == "saturday":
+        week_index = 5
         add_point += 2
-        weeken[id2] += 1
-    elif wk == "sunday":
-        index = 6
+        point_weekend[name_index] += 1
+    elif dayofweek == "sunday":
+        week_index = 6
         add_point += 2
-        weeken[id2] += 1
+        point_weekend[name_index] += 1
 
-    dat[id2][index] += 1
-    points[id2] += add_point
+    attendants_point_data[name_index][week_index] += 1
+    points[name_index] += add_point
+
+
+def add_name(name: str) -> None:
+    global total_id_cnt
+    if name not in unique_name_list:
+        total_id_cnt += 1
+        unique_name_list[name] = total_id_cnt
+        names[total_id_cnt] = name
+
 
 def input_file():
     try:
@@ -59,37 +99,17 @@ def input_file():
                     break
                 parts = line.strip().split()
                 if len(parts) == 2:
-                    input2(parts[0], parts[1])
+                    check_point(parts[0], parts[1])
 
-        for i in range(1, id_cnt + 1):
-            if dat[i][3] > 9:
-                points[i] += 10
-            if dat[i][5] + dat[i][6] > 9:
-                points[i] += 10
+        for id in range(1, total_id_cnt + 1):
+            calculate_point(id)
+            print_point(id)
 
-            if points[i] >= 50:
-                grade[i] = 1
-            elif points[i] >= 30:
-                grade[i] = 2
-            else:
-                grade[i] = 0
-
-            print(f"NAME : {names[i]}, POINT : {points[i]}, GRADE : ", end="")
-            if grade[i] == 1:
-                print("GOLD")
-            elif grade[i] == 2:
-                print("SILVER")
-            else:
-                print("NORMAL")
-
-        print("\nRemoved player")
-        print("==============")
-        for i in range(1, id_cnt + 1):
-            if grade[i] not in (1, 2) and wed[i] == 0 and weeken[i] == 0:
-                print(names[i])
+        print_removed_player()
 
     except FileNotFoundError:
         print("파일을 찾을 수 없습니다.")
+
 
 if __name__ == "__main__":
     input_file()
