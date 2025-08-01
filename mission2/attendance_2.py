@@ -2,6 +2,13 @@
 GOLD = 1
 SILVER = 2
 NORMAL = 0
+MONDAY = 0
+TUESDAY = 1
+WEDNESDAY = 2
+THURSDAY = 3
+FRIDAY = 4
+SATURDAY = 5
+SUNDAY = 6
 
 unique_name_list = {}
 total_id_cnt = 0
@@ -54,27 +61,27 @@ def check_point(name: str, dayofweek: str) -> None:
     week_index = 0
 
     if dayofweek == "monday":
-        week_index = 0
+        week_index = MONDAY
         add_point += 1
     elif dayofweek == "tuesday":
-        week_index = 1
+        week_index = TUESDAY
         add_point += 1
     elif dayofweek == "wednesday":
-        week_index = 2
+        week_index = WEDNESDAY
         add_point += 3
         point_wednesday[name_index] += 1
     elif dayofweek == "thursday":
-        week_index = 3
+        week_index = THURSDAY
         add_point += 1
     elif dayofweek == "friday":
-        week_index = 4
+        week_index = FRIDAY
         add_point += 1
     elif dayofweek == "saturday":
-        week_index = 5
+        week_index = SATURDAY
         add_point += 2
         point_weekend[name_index] += 1
     elif dayofweek == "sunday":
-        week_index = 6
+        week_index = SUNDAY
         add_point += 2
         point_weekend[name_index] += 1
 
