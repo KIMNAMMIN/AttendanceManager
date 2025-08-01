@@ -91,8 +91,8 @@ class FileManager:
                         self.check_point(parts[0], parts[1])
 
                 for player in self.players.values():
-                    player.calculate_grade()
 
+                    player.calculate_grade()
                     player.print_info()
 
                 self.print_removed_player()
