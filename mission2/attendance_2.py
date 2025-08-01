@@ -1,20 +1,49 @@
 from constants import *
 
-
 class Player():
     def __init__(self, name, grade, point):
         self.name = name
         self.grade = grade
         self.point = point
         self.wednesday_point = 0
+        self.weekend_point = 0
 
-    def calculate(self, weekday):
-        pass
+    def update_score(self, dayofweek, name_index):
+        add_point = 0
+        week_index = 0
 
+        if dayofweek == "monday":
+            week_index = MONDAY
+            add_point += 1
+        elif dayofweek == "tuesday":
+            week_index = TUESDAY
+            add_point += 1
+        elif dayofweek == "wednesday":
+            week_index = WEDNESDAY
+            add_point += 3
+            point_wednesday[name_index] += 1
+            self.wednesday_point += 1
+        elif dayofweek == "thursday":
+            week_index = THURSDAY
+            add_point += 1
+        elif dayofweek == "friday":
+            week_index = FRIDAY
+            add_point += 1
+        elif dayofweek == "saturday":
+            week_index = SATURDAY
+            add_point += 2
+            point_weekend[name_index] += 1
+            self.weekend_point += 1
+        elif dayofweek == "sunday":
+            week_index = SUNDAY
+            add_point += 2
+            point_weekend[name_index] += 1
+            self.weekend_point += 1
 
-class CalcPoint():
-    def __init__(self):
-        pass
+        attendants_point_data[name_index][week_index] += 1
+        points[name_index] += add_point
+
+        self.point = points[name_index]
 
 
 class FileManager():
@@ -41,37 +70,9 @@ class FileManager():
 
         self.add_player(name)
         name_index = unique_name_list[name]
-
-        add_point = 0
-        week_index = 0
-
-        if dayofweek == "monday":
-            week_index = MONDAY
-            add_point += 1
-        elif dayofweek == "tuesday":
-            week_index = TUESDAY
-            add_point += 1
-        elif dayofweek == "wednesday":
-            week_index = WEDNESDAY
-            add_point += 3
-            point_wednesday[name_index] += 1
-        elif dayofweek == "thursday":
-            week_index = THURSDAY
-            add_point += 1
-        elif dayofweek == "friday":
-            week_index = FRIDAY
-            add_point += 1
-        elif dayofweek == "saturday":
-            week_index = SATURDAY
-            add_point += 2
-            point_weekend[name_index] += 1
-        elif dayofweek == "sunday":
-            week_index = SUNDAY
-            add_point += 2
-            point_weekend[name_index] += 1
-
-        attendants_point_data[name_index][week_index] += 1
-        points[name_index] += add_point
+        for p in player_list:
+            if p.name == name:
+                p.update_score(dayofweek, name_index)
 
     def file_read(self):
         try:
